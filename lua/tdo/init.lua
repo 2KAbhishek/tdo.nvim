@@ -15,7 +15,7 @@ tdo.new_note = function()
     tdo.run(note)
 end
 
-tdo.find_notes = function()
+tdo.find_note = function()
     local root = vim.env.NOTES_DIR
     require('telescope.builtin').live_grep({ cwd = root, prompt_title = 'Search Notes' })
 end

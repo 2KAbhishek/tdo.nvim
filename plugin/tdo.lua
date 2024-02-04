@@ -18,7 +18,7 @@ vim.api.nvim_create_user_command('TdoTomorrow', 'lua require("tdo").run_with("1"
 vim.api.nvim_create_user_command('TdoPending', 'lua require("tdo").pending_todos()', {})
 vim.api.nvim_create_user_command('TdoToggle', 'lua require("tdo").toggle_todo()', {})
 vim.api.nvim_create_user_command('TdoFind', 'lua require("tdo").find_note()', {})
-vim.api.nvim_create_user_command('TdoFiles', 'lua require("tdo").all_files()', {})
+vim.api.nvim_create_user_command('TdoFiles', 'lua require("tdo").all_notes()', {})
 
 vim.api.nvim_set_keymap('n', ']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]],
     { noremap = true, silent = true, desc = 'Next Todo' })
