@@ -6,6 +6,15 @@ tdo.run = function(command)
     vim.cmd('edit ' .. file_name)
 end
 
+tdo.note = function()
+    local note = vim.fn.input('Note Path: ')
+    if note == '' then
+        local current_time = os.date('%m-%d-%H-%M')
+        note = 'drafts/' .. current_time
+    end
+    tdo.run(note)
+end
+
 tdo.search = function()
     local root = vim.env.NOTES_DIR
     require('telescope.builtin').live_grep({ cwd = root, prompt_title = 'Tdo Search' })

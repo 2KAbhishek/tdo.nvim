@@ -12,6 +12,7 @@ vim.api.nvim_create_user_command('TdoEntry', function(input)
     require("tdo").run('entry ' .. input.args)
 end, { nargs = '*' })
 
+vim.api.nvim_create_user_command('TdoNote', 'lua require("tdo").note()', {})
 vim.api.nvim_create_user_command('TdoYesterday', 'lua require("tdo").run("-1")', {})
 vim.api.nvim_create_user_command('TdoTomorrow', 'lua require("tdo").run("1")', {})
 vim.api.nvim_create_user_command('TdoPending', 'lua require("tdo").pending()', {})
