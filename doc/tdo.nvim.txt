@@ -1,0 +1,50 @@
+TABLE OF CONTENTS                                              *tdo.nvim.toc*
+1.  Introduction               (|tdo.nvim|)
+2.  Quickstart                 (|tdo-quickstart|)
+3.  Commands                   (|tdo-commands|)
+4.  Mappings                   (|tdo-mappings|)
+
+================================================================================
+INTRODUCTION                                                       *tdo.nvim*
+
+This plugin works with tdo to help you better manage your notes
+
+================================================================================
+QUICKSTART                                                   *tdo-quickstart*
+
+Add the following to you lazy/packer config
+
+>
+    -- Lazy
+    {
+        '2kabhishek/tdo.nvim',
+        dependencies = { 'stevearc/dressing.nvim', 'nvim-telescope/telescope.nvim' },
+        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle' 'TdoFind',
+            'TdoFiles', 'TdoYesterday', 'TdoTomorrow' },
+        keys = { '[t', ']t' },
+    },
+
+    -- Packer
+    use '2kabhishek/tdo.nvim'
+<
+
+================================================================================
+COMMANDS                                                       *tdo-commands*
+
+Tdo adds the following commands:
+
+'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle' 'TdoFind',
+'TdoFiles', 'TdoYesterday', 'TdoTomorrow'
+>
+    :Tdo 1
+<
+
+================================================================================
+MAPPINGS                                                       *tdo-mappings*
+
+tdo adds the following mappings:
+
+- [t / ]t - Go to previous/next todo `[ ]`
+
+================================================================================
+
