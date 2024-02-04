@@ -4,39 +4,20 @@ end
 
 vim.g.loaded_tdo = true
 
-local tdo = require("tdo")
-
 vim.api.nvim_create_user_command('Tdo', function(input)
-    tdo.run(input.args)
+    require("tdo").run(input.args)
 end, { nargs = '*' })
 
 vim.api.nvim_create_user_command('TdoEntry', function(input)
-    tdo.run('entry ' .. input.args)
+    require("tdo").run('entry ' .. input.args)
 end, { nargs = '*' })
 
-vim.api.nvim_create_user_command('TdoYesterday', function()
-    tdo.run('-1')
-end, {})
-
-vim.api.nvim_create_user_command('TdoTomorrow', function()
-    tdo.run('1')
-end, {})
-
-vim.api.nvim_create_user_command('TdoSearch', function()
-    tdo.search()
-end, {})
-
-vim.api.nvim_create_user_command('TdoFind', function()
-    tdo.search()
-end, {})
-
-vim.api.nvim_create_user_command('TdoFiles', function()
-    tdo.files()
-end, {})
-
-vim.api.nvim_create_user_command('TdoPending', function()
-    tdo.pending()
-end, {})
+vim.api.nvim_create_user_command('TdoYesterday', 'lua require("tdo").run("-1")', {})
+vim.api.nvim_create_user_command('TdoTomorrow', 'lua require("tdo").run("1")', {})
+vim.api.nvim_create_user_command('TdoPending', 'lua require("tdo").pending()', {})
+vim.api.nvim_create_user_command('TdoSearch', 'lua require("tdo").search()', {})
+vim.api.nvim_create_user_command('TdoFind', 'lua require("tdo").search()', {})
+vim.api.nvim_create_user_command('TdoFiles', 'lua require("tdo").files()', {})
 
 vim.api.nvim_set_keymap('n', ']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]],
     { noremap = true, silent = true, desc = 'Next Todo' })
