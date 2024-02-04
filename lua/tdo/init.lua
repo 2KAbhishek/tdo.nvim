@@ -17,18 +17,18 @@ end
 
 tdo.search = function()
     local root = vim.env.NOTES_DIR
-    require('telescope.builtin').live_grep({ cwd = root, prompt_title = 'Tdo Search' })
+    require('telescope.builtin').live_grep({ cwd = root, prompt_title = 'Search Notes' })
 end
 
 tdo.files = function()
     local root = vim.env.NOTES_DIR
-    require('telescope.builtin').find_files({ cwd = root, prompt_title = 'Tdo Files' })
+    require('telescope.builtin').find_files({ cwd = root, prompt_title = 'All Notes' })
 end
 
 tdo.pending = function()
     local result = vim.fn.systemlist('tdo todo')
     if #result > 0 then
-        vim.ui.select(result, { prompt = 'Tdo Pending' }, function(item, _)
+        vim.ui.select(result, { prompt = 'Pending Todos' }, function(item, _)
             if item ~= nil then
                 vim.cmd('edit ' .. item)
             end
