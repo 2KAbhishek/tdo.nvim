@@ -26,6 +26,10 @@ vim.api.nvim_create_user_command('TdoSearch', function()
     tdo.search()
 end, {})
 
+vim.api.nvim_create_user_command('TdoFind', function()
+    tdo.search()
+end, {})
+
 vim.api.nvim_create_user_command('TdoFiles', function()
     tdo.files()
 end, {})
@@ -33,3 +37,8 @@ end, {})
 vim.api.nvim_create_user_command('TdoPending', function()
     tdo.pending()
 end, {})
+
+vim.api.nvim_set_keymap('n', ']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]],
+    { noremap = true, silent = true, desc = 'Next Todo' })
+vim.api.nvim_set_keymap('n', '[t', [[?\v\[ \]\_s*[^[]<CR>:noh<CR>]],
+    { noremap = true, silent = true, desc = 'Prev Todo' })
