@@ -9,7 +9,7 @@ end
 tdo.note = function()
     local note = vim.fn.input('Note Path: ')
     if note == '' then
-        local current_time = os.date('%m-%d-%H-%M')
+        local current_time = os.date('%m-%d-%H-%M-%S')
         note = 'drafts/' .. current_time
     end
     tdo.run(note)
