@@ -19,6 +19,7 @@ vim.api.nvim_create_user_command('TdoPending', 'lua require("tdo").pending()', {
 vim.api.nvim_create_user_command('TdoSearch', 'lua require("tdo").search()', {})
 vim.api.nvim_create_user_command('TdoFind', 'lua require("tdo").search()', {})
 vim.api.nvim_create_user_command('TdoFiles', 'lua require("tdo").files()', {})
+vim.api.nvim_create_user_command('TdoToggle', 'lua require("tdo").toggle()', {})
 
 vim.api.nvim_set_keymap('n', ']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]],
     { noremap = true, silent = true, desc = 'Next Todo' })
