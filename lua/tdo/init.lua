@@ -16,3 +16,15 @@ tdo.files = function()
     require('telescope.builtin').find_files({ cwd = root, prompt_title = 'Tdo Files' })
 end
 
+tdo.pending = function()
+    local result = vim.fn.systemlist('tdo todo')
+    if #result > 0 then
+        vim.ui.select(result, { prompt = 'Tdo Pending' }, function(item, _)
+            if item ~= nil then
+                vim.cmd('edit ' .. item)
+            end
+        end)
+    end
+end
+
+return tdo
