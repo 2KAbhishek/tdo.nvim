@@ -1,12 +1,12 @@
 local tdo = {}
 
-tdo.run = function(command)
-    local full_command = 'tdo ' .. command
+tdo.run_with = function(argument)
+    local full_command = 'tdo ' .. argument
     local file_name = vim.fn.system(full_command)
     vim.cmd('edit ' .. file_name)
 end
 
-tdo.note = function()
+tdo.new_note = function()
     local note = vim.fn.input('Note Path: ')
     if note == '' then
         local current_time = os.date('%m-%d-%H-%M-%S')
@@ -15,17 +15,17 @@ tdo.note = function()
     tdo.run(note)
 end
 
-tdo.search = function()
+tdo.find_notes = function()
     local root = vim.env.NOTES_DIR
     require('telescope.builtin').live_grep({ cwd = root, prompt_title = 'Search Notes' })
 end
 
-tdo.files = function()
+tdo.all_notes = function()
     local root = vim.env.NOTES_DIR
     require('telescope.builtin').find_files({ cwd = root, prompt_title = 'All Notes' })
 end
 
-tdo.pending = function()
+tdo.pending_todos = function()
     local result = vim.fn.systemlist('tdo todo')
     if #result > 0 then
         vim.ui.select(result, { prompt = 'Pending Todos' }, function(item, _)
@@ -36,7 +36,7 @@ tdo.pending = function()
     end
 end
 
-tdo.toggle = function()
+tdo.toggle_todo = function()
     local startline = vim.api.nvim_buf_get_mark(0, "<")[1]
     local endline = vim.api.nvim_buf_get_mark(0, ">")[1]
     local cursorlinenr = vim.api.nvim_win_get_cursor(0)[1]
