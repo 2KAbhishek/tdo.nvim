@@ -6,5 +6,13 @@ tdo.run = function(command)
     vim.api.nvim_command('edit ' .. file_name)
 end
 
-return tdo
+tdo.search = function()
+    local root = vim.env.NOTES_DIR
+    require('telescope.builtin').live_grep({ cwd = root, prompt_title = 'Tdo Search' })
+end
+
+tdo.files = function()
+    local root = vim.env.NOTES_DIR
+    require('telescope.builtin').find_files({ cwd = root, prompt_title = 'Tdo Files' })
+end
 
