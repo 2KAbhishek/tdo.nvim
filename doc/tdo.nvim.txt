@@ -7,44 +7,78 @@ TABLE OF CONTENTS                                              *tdo.nvim.toc*
 ================================================================================
 INTRODUCTION                                                       *tdo.nvim*
 
-This plugin works with tdo to help you better manage your notes
+tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim workflow to make managing notes and todos super simple and fast.
+
+Features
+
+- All features provided by [tdo](https://github.com/2kabhishek/tdo?tab=readme-ov-file#-features)
+- Various commands to make working with tdo seamless
+- Todo navigation and toggle helpers
+- Integration with telescope for easy notes searching
 
 ================================================================================
 QUICKSTART                                                   *tdo-quickstart*
 
-Add the following to you lazy/packer config
+Add the following to your lazy/packer config
 
->
+```bash
     -- Lazy
     {
         '2kabhishek/tdo.nvim',
         dependencies = { 'stevearc/dressing.nvim', 'nvim-telescope/telescope.nvim' },
-        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle' 'TdoFind',
-            'TdoFiles', 'TdoYesterday', 'TdoTomorrow' },
+        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle' 'TdoFind', 'TdoFiles' },
         keys = { '[t', ']t' },
     },
 
     -- Packer
     use '2kabhishek/tdo.nvim'
-<
+```
 
 ================================================================================
 COMMANDS                                                       *tdo-commands*
 
-Tdo adds the following commands:
+`tdo.nvim` adds the following commands:
 
-'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle' 'TdoFind',
-'TdoFiles', 'TdoYesterday', 'TdoTomorrow'
->
-    :Tdo 1
-<
+- `Tdo <args>`: open today's todo when no `args`, accepts `args` same as [tdo](https://github.com/2kabhishek/tdo?tab=readme-ov-file#-usage)
+- `TdoEntry <offset>`: open today's journal entry, accepts `offset`
+- `TdoNote`: create new note with title, if left empty creates a draft with current timestamp
+- `TdoPending`: show all your pending todos
+- `TdoToggle`: toggle todo state
+- `TdoFind <text>`: interactively search for `text` in all your notes
+- `TdoFiles`: review all your notes
 
 ================================================================================
 MAPPINGS                                                       *tdo-mappings*
 
-tdo adds the following mappings:
+`tdo.nvim` adds the following mappings:
 
-- [t / ]t - Go to previous/next todo `[ ]`
+- [t / ]t — Go to previous/next todo `[ ]`
+
+Recommended which-key Mappings
+
+Other than the standard commands, you can use which-key to create your own commands.
+
+I have defined commands for yesterday/tomorrow's todos, commit note and timestamp insertion.
+
+```lua
+    n = {
+        name = 'Notes',
+        d = { '<cmd>Tdo<cr>', "Today's Todo" },
+        e = { '<cmd>TdoEntry<cr>', "Today's Entry" },
+        f = { '<cmd>TdoFiles<cr>', 'All Notes' },
+        g = { '<cmd>TdoFind<cr>', 'Find Notes' },
+        h = { '<cmd>Tdo -1<cr>', "Yesterday's Todo" },
+        j = { "<cmd>put =strftime('%a %d %b %r')<cr>", 'Insert Human Date' },
+        J = { "<cmd>put =strftime('%F')<cr>", 'Insert Date' },
+        k = { "<cmd>put =strftime('%r')<cr>", 'Insert Human Time' },
+        K = { "<cmd>put =strftime('%F-%H-%M')<cr>", 'Insert Time' },
+        l = { '<cmd>Tdo 1<cr>', "Tomorrow's Todo" },
+        t = { '<cmd>TdoPending<cr>', 'Pending Todos' },
+        n = { '<cmd>TdoNote<cr>', 'New Note' },
+        s = { '<cmd>lua require("tdo").run_with("commit " .. vim.fn.expand("%:p")) vim.notify("Commited!")<cr>', 'Commit Note', },
+        x = { '<cmd>TdoToggle<cr>', 'Toggle Todo' },
+    },
+```
 
 ================================================================================
 

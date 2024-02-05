@@ -30,59 +30,98 @@
 
 </div>
 
-tdo.nvim is a `<utility/tool>` that allows `<target_audience>` to `<action>`.
+tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim workflow to make managing notes and todos super simple and fast.
 
 ## ✨ Features
 
-- Comes with a ready to go README template
-- Works with [mkrepo](https://github.com/2kabhishek/mkrepo)
+- All features provided by [tdo](https://github.com/2kabhishek/tdo?tab=readme-ov-file#-features)
+- Various commands to make working with tdo seamless
+- Todo navigation and toggle helpers
+- Integration with telescope for easy notes searching
 
 ## ⚡ Setup
 
 ### ⚙️ Requirements
 
-- foo >= bar
-- bazz
+- neovim
 
 ### 💻 Installation
 
-Installing tdo.nvim is as simple as cloning and symlinking!
+Add the following to your lazy/packer config
 
 ```bash
-git clone https://github.com/2kabhishek/tdo.nvim
-cd tdo.nvim
-<install_command>
+    -- Lazy
+    {
+        '2kabhishek/tdo.nvim',
+        dependencies = { 'stevearc/dressing.nvim', 'nvim-telescope/telescope.nvim' },
+        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle' 'TdoFind', 'TdoFiles' },
+        keys = { '[t', ']t' },
+    },
+
+    -- Packer
+    use '2kabhishek/tdo.nvim'
 ```
 
 ## 🚀 Usage
 
-```bash
-USAGE:
-    tdo.nvim [FLAGS] [OPTIONS]
-Example:
-    tdo.nvim
+### 📡 Commands
+
+`tdo.nvim` adds the following commands:
+
+- `Tdo <args>`: open today's todo when no `args`, accepts `args` same as [tdo](https://github.com/2kabhishek/tdo?tab=readme-ov-file#-usage)
+- `TdoEntry <offset>`: open today's journal entry, accepts `offset`
+- `TdoNote`: create new note with title, if left empty creates a draft with current timestamp
+- `TdoPending`: show all your pending todos
+- `TdoToggle`: toggle todo state
+- `TdoFind <text>`: interactively search for `text` in all your notes
+- `TdoFiles`: review all your notes
+
+### ⌨️ Mappings
+
+`tdo.nvim` adds the following mappings:
+
+- <kbd>[t</kbd> / <kbd>]t</kbd> — Go to previous/next todo `[ ]`
+
+#### Recommended which-key Mappings
+
+Other than the standard commands, you can use which-key to create your own commands.
+
+I have defined commands for yesterday/tomorrow's todos, commit note and timestamp insertion.
+
+```lua
+    n = {
+        name = 'Notes',
+        d = { '<cmd>Tdo<cr>', "Today's Todo" },
+        e = { '<cmd>TdoEntry<cr>', "Today's Entry" },
+        f = { '<cmd>TdoFiles<cr>', 'All Notes' },
+        g = { '<cmd>TdoFind<cr>', 'Find Notes' },
+        h = { '<cmd>Tdo -1<cr>', "Yesterday's Todo" },
+        j = { "<cmd>put =strftime('%a %d %b %r')<cr>", 'Insert Human Date' },
+        J = { "<cmd>put =strftime('%F')<cr>", 'Insert Date' },
+        k = { "<cmd>put =strftime('%r')<cr>", 'Insert Human Time' },
+        K = { "<cmd>put =strftime('%F-%H-%M')<cr>", 'Insert Time' },
+        l = { '<cmd>Tdo 1<cr>', "Tomorrow's Todo" },
+        n = { '<cmd>TdoNote<cr>', 'New Note' },
+        s = { '<cmd>lua require("tdo").run_with("commit " .. vim.fn.expand("%:p")) vim.notify("Commited!")<cr>', 'Commit Note', },
+        t = { '<cmd>TdoPending<cr>', 'Pending Todos' },
+        x = { '<cmd>TdoToggle<cr>', 'Toggle Todo' },
+    },
 ```
 
 ## 🏗️ What's Next
 
-Planning to add `<feature/module>`.
-
-### ✅ To-Do
-
-- [x] Setup repo
-- [ ] Think real hard
-- [ ] Start typing
+You tell me!
 
 ## 🧑‍💻 Behind The Code
 
 ### 🌈 Inspiration
 
-tdo.nvim was inspired by `<reason/idea>`.
+Most note-taking systems offer a lot more than I needed, so I wrote [tdo](https://github.com/2kabhishek/tdo) and then tdo.nvim for better integration.
 
 ### 💡 Challenges/Learnings
 
-- The main challenges were `<issue/difficulty>`
-- I learned about `<learning/accomplishment>`
+- Dove deeper into nvim APIs
+- Learned about not interactive shell scripting.
 
 ### 🧰 Tooling
 
@@ -93,8 +132,8 @@ tdo.nvim was inspired by `<reason/idea>`.
 
 ### 🔍 More Info
 
-- [shelly](https://github.com/2kabhishek/shelly) — Command line template
-- [tiny-web](https://github.com/2kabhishek/tiny-web) — Web app template
+- [co-author.nvim](https://github.com/2kabhishek/co-author.nvim) — Easily add git co authors
+- [nerdy.nvim](https://github.com/2kabhishek/nerdy.nvim) — Easily add nerd glyphs
 
 <hr>
 
