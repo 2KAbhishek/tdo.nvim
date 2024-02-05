@@ -26,14 +26,18 @@ tdo.all_notes = function()
 end
 
 tdo.pending_todos = function()
-    local result = vim.fn.systemlist('tdo todo')
-    if #result > 0 then
-        vim.ui.select(result, { prompt = 'Pending Todos' }, function(item, _)
-            if item ~= nil then
-                vim.cmd('edit ' .. item)
-            end
-        end)
-    end
+    local results = vim.fn.systemlist('tdo todo')
+
+    require('telescope.finders').new({}, {
+        prompt_title = 'Find in todos',
+        results_title = 'Pending Todos',
+        finder = require('telescope.pickers').new_table({
+            results = results,
+            entry_maker = require('telescope.make_entry').gen_from_file(),
+        }),
+        sorter = require('telescope.sorters').get_fzy_sorter(),
+        previewer = require('telescope.previewers').vim_buffer_cat.new({}),
+    }):find()
 end
 
 tdo.toggle_todo = function()
