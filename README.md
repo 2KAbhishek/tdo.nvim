@@ -56,7 +56,7 @@ Add the following to your lazy/packer config
     {
         '2kabhishek/tdo.nvim',
         dependencies =  'nvim-telescope/telescope.nvim',
-        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle' 'TdoFind', 'TdoFiles' },
+        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle', 'TdoFind', 'TdoFiles' },
         keys = { '[t', ']t' },
     },
 
