@@ -44,16 +44,18 @@ tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim wo
 ### ⚙️ Requirements
 
 - neovim
+- [tdo](https://github.com/2kabhishek/tdo)
+- telescope.nvim
 
 ### 💻 Installation
 
 Add the following to your lazy/packer config
 
-```bash
+```lua
     -- Lazy
     {
         '2kabhishek/tdo.nvim',
-        dependencies = { 'stevearc/dressing.nvim', 'nvim-telescope/telescope.nvim' },
+        dependencies =  'nvim-telescope/telescope.nvim',
         cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle' 'TdoFind', 'TdoFiles' },
         keys = { '[t', ']t' },
     },
