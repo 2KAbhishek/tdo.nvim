@@ -29,8 +29,8 @@ tdo.pending_todos = function()
     local results = vim.fn.systemlist('tdo todo')
 
     require('telescope.pickers').new({}, {
-        prompt_title = 'Find in todos',
-        results_title = 'Pending Todos',
+        prompt_title = 'Find in Todos',
+        results_title = 'Incomplete Todos',
         finder = require('telescope.finders').new_table({
             results = results,
             entry_maker = require('telescope.make_entry').gen_from_file(),

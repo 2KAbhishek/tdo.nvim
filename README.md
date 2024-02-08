@@ -56,7 +56,7 @@ Add the following to your lazy/packer config
     {
         '2kabhishek/tdo.nvim',
         dependencies =  'nvim-telescope/telescope.nvim',
-        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoPending', 'TdoToggle', 'TdoFind', 'TdoFiles' },
+        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoTodos', 'TdoToggle', 'TdoFind', 'TdoFiles' },
         keys = { '[t', ']t' },
     },
 
@@ -73,7 +73,7 @@ Add the following to your lazy/packer config
 - `Tdo <args>`: open today's todo when no `args`, accepts `args` same as [tdo](https://github.com/2kabhishek/tdo?tab=readme-ov-file#-usage)
 - `TdoEntry <offset>`: open today's journal entry, accepts `offset`
 - `TdoNote`: create new note with title, if left empty creates a draft with current timestamp
-- `TdoPending`: show all your pending todos
+- `TdoTodos`: show all your incomplete todos
 - `TdoToggle`: toggle todo state
 - `TdoFind <text>`: interactively search for `text` in all your notes
 - `TdoFiles`: review all your notes
@@ -105,7 +105,7 @@ I have defined commands for yesterday/tomorrow's todos, commit note and timestam
         l = { '<cmd>Tdo 1<cr>', "Tomorrow's Todo" },
         n = { '<cmd>TdoNote<cr>', 'New Note' },
         s = { '<cmd>lua require("tdo").run_with("commit " .. vim.fn.expand("%:p")) vim.notify("Commited!")<cr>', 'Commit Note', },
-        t = { '<cmd>TdoPending<cr>', 'Pending Todos' },
+        t = { '<cmd>TdoTodos<cr>', 'Incomplete Todos' },
         x = { '<cmd>TdoToggle<cr>', 'Toggle Todo' },
     },
 ```
