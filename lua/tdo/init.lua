@@ -12,7 +12,7 @@ tdo.new_note = function()
         local current_time = os.date('%m-%d-%H-%M-%S')
         note = 'drafts/' .. current_time
     end
-    tdo.run(note)
+    tdo.run_with(string.format("'%s'", note))
 end
 
 tdo.find_note = function()
