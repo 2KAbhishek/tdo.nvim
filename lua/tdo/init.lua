@@ -1,7 +1,7 @@
 local tdo = {}
 
 tdo.run_with = function(argument)
-    local full_command = 'tdo ' .. argument
+    local full_command = 'tdo ' .. string.format("'%s'", argument)
     local file_name = vim.fn.system(full_command)
     vim.cmd('edit ' .. file_name)
 end
