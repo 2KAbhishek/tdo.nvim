@@ -1,7 +1,7 @@
 local tdo = {}
 
 tdo.run_with = function(argument)
-    local full_command = 'tdo ' .. string.format("'%s'", argument)
+    local full_command = 'tdo ' .. argument
     local file_name = vim.fn.system(full_command)
     vim.cmd('edit ' .. file_name)
 end
@@ -12,7 +12,7 @@ tdo.new_note = function()
         local current_time = os.date('%m-%d-%H-%M-%S')
         note = 'drafts/' .. current_time
     end
-    tdo.run_with(note)
+    tdo.run_with(string.format("'%s'", note))
 end
 
 tdo.find_note = function()
