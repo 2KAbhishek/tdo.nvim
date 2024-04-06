@@ -30,6 +30,8 @@ end
 
 tdo.pending_todos = function()
     local results = vim.fn.systemlist('tdo todo')
+    vim.o.hlsearch = true
+    vim.fn.setreg('/', ' ]')
 
     require('telescope.pickers').new({}, {
         prompt_title = 'Find in Todos',
