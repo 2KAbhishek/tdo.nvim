@@ -8,7 +8,7 @@ end
 
 tdo.new_note = function()
     local note = vim.fn.input({ prompt = 'Note Path: ', cancelreturn = false })
-    if note == false then
+    if not note then
       return
     end
     if note == '' then
