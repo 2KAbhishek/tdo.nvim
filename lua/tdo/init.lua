@@ -9,7 +9,7 @@ end
 tdo.new_note = function()
     local note = vim.fn.input({ prompt = 'Note Path: ', cancelreturn = false })
     if not note then
-      return
+        return
     end
     if note == '' then
         local current_time = os.date('%m-%d-%H-%M-%S')
@@ -33,25 +33,27 @@ tdo.pending_todos = function()
     vim.o.hlsearch = true
     vim.fn.setreg('/', ' ]')
 
-    require('telescope.pickers').new({}, {
-        prompt_title = 'Find in Todos',
-        results_title = 'Incomplete Todos',
-        finder = require('telescope.finders').new_table({
-            results = results,
-            entry_maker = require('telescope.make_entry').gen_from_file(),
-        }),
-        sorter = require('telescope.sorters').get_fzy_sorter(),
-        previewer = require('telescope.previewers').vim_buffer_cat.new({}),
-    }):find()
+    require('telescope.pickers')
+        .new({}, {
+            prompt_title = 'Find in Todos',
+            results_title = 'Incomplete Todos',
+            finder = require('telescope.finders').new_table({
+                results = results,
+                entry_maker = require('telescope.make_entry').gen_from_file(),
+            }),
+            sorter = require('telescope.sorters').get_fzy_sorter(),
+            previewer = require('telescope.previewers').vim_buffer_cat.new({}),
+        })
+        :find()
 end
 
 tdo.toggle_todo = function()
-    local startline = vim.api.nvim_buf_get_mark(0, "<")[1]
-    local endline = vim.api.nvim_buf_get_mark(0, ">")[1]
+    local startline = vim.api.nvim_buf_get_mark(0, '<')[1]
+    local endline = vim.api.nvim_buf_get_mark(0, '>')[1]
     local cursorlinenr = vim.api.nvim_win_get_cursor(0)[1]
 
-    vim.api.nvim_buf_set_mark(0, "<", 0, 0, {})
-    vim.api.nvim_buf_set_mark(0, ">", 0, 0, {})
+    vim.api.nvim_buf_set_mark(0, '<', 0, 0, {})
+    vim.api.nvim_buf_set_mark(0, '>', 0, 0, {})
     if startline <= 0 or endline <= 0 then
         startline = cursorlinenr
         endline = cursorlinenr
@@ -60,16 +62,16 @@ tdo.toggle_todo = function()
         local curline = vim.api.nvim_buf_get_lines(0, curlinenr - 1, curlinenr, false)[1]
         local stripped = vim.trim(curline)
         local repline
-        if vim.startswith(stripped, "- ") and not vim.startswith(stripped, "- [") then
-            repline = curline:gsub("%- ", "- [ ] ", 1)
+        if vim.startswith(stripped, '- ') and not vim.startswith(stripped, '- [') then
+            repline = curline:gsub('%- ', '- [ ] ', 1)
         else
-            if vim.startswith(stripped, "- [ ]") then
-                repline = curline:gsub("%- %[ %]", "- [x]", 1)
+            if vim.startswith(stripped, '- [ ]') then
+                repline = curline:gsub('%- %[ %]', '- [x]', 1)
             else
-                if vim.startswith(stripped, "- [x]") then
-                    repline = curline:gsub("%- %[x%]", "-", 1)
+                if vim.startswith(stripped, '- [x]') then
+                    repline = curline:gsub('%- %[x%]', '-', 1)
                 else
-                    repline = curline:gsub("(%S)", "- [ ] %1", 1)
+                    repline = curline:gsub('(%S)', '- [ ] %1', 1)
                 end
             end
         end
