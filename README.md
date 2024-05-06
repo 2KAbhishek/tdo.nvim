@@ -20,7 +20,7 @@
 <a href="https://github.com/2KAbhishek/tdo.nvim/pulse">
 <img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/tdo.nvim?style=flat&color=e06c75&label="> </a>
 
-<h3>Fast & Simple Note Taking in Neovim! 📃🚀</h3>
+<h3>Fast & Simple Notes in Neovim 📃🚀</h3>
 
 <figure>
   <img src="images/screenshot.jpg" alt="tdo.nvim in action">
