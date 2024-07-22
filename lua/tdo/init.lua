@@ -1,9 +1,35 @@
 local tdo = {}
 
+local function telescope_select(options, options_desc, select_prompt)
+    require('telescope.pickers')
+        .new({}, {
+            prompt_title = select_prompt,
+            results_title = options_desc,
+            finder = require('telescope.finders').new_table({
+                results = options,
+                entry_maker = require('telescope.make_entry').gen_from_file(),
+            }),
+            sorter = require('telescope.sorters').get_fzy_sorter(),
+            previewer = require('telescope.previewers').vim_buffer_cat.new({}),
+        })
+        :find()
+end
+
 tdo.run_with = function(argument)
     local full_command = 'tdo ' .. argument
     local file_name = vim.fn.system(full_command)
-    vim.cmd('edit ' .. file_name)
+    if file_name == '' then
+        return
+    end
+
+    local file_names = vim.split(file_name, '\n')
+    table.remove(file_names, #file_names)
+
+    if #file_names > 1 then
+        telescope_select(file_names, 'Notes with similar name', 'Select Note')
+    else
+        vim.cmd('e ' .. file_name)
+    end
 end
 
 tdo.new_note = function()
@@ -32,19 +58,7 @@ tdo.pending_todos = function()
     local results = vim.fn.systemlist('tdo todo')
     vim.o.hlsearch = true
     vim.fn.setreg('/', ' ]')
-
-    require('telescope.pickers')
-        .new({}, {
-            prompt_title = 'Find in Todos',
-            results_title = 'Incomplete Todos',
-            finder = require('telescope.finders').new_table({
-                results = results,
-                entry_maker = require('telescope.make_entry').gen_from_file(),
-            }),
-            sorter = require('telescope.sorters').get_fzy_sorter(),
-            previewer = require('telescope.previewers').vim_buffer_cat.new({}),
-        })
-        :find()
+    telescope_select(results, 'Pending Todos', 'Select Todo')
 end
 
 tdo.toggle_todo = function()
