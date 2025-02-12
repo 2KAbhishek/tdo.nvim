@@ -43,7 +43,7 @@ tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim wo
 
 ### ⚙️ Requirements
 
-- neovim
+- Neovim
 - [tdo](https://github.com/2kabhishek/tdo)
 - telescope.nvim
 
