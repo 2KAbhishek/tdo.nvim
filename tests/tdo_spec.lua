@@ -1,0 +1,12 @@
+local tdo = require('tdo')
+
+describe('tdo', function()
+    it('has the right functions defined', function()
+        assert.is_function(tdo.run_with)
+        assert.is_function(tdo.new_note)
+        assert.is_function(tdo.find_note)
+        assert.is_function(tdo.all_notes)
+        assert.is_function(tdo.pending_todos)
+        assert.is_function(tdo.toggle_todo)
+    end)
+end)
