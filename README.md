@@ -107,6 +107,13 @@ I have defined commands for yesterday/tomorrow's todos, commit note and timestam
         s = { '<cmd>lua require("tdo").run_with("commit " .. vim.fn.expand("%:p")) vim.notify("Commited!")<cr>', 'Commit Note', },
         t = { '<cmd>TdoTodos<cr>', 'Incomplete Todos' },
         x = { '<cmd>TdoToggle<cr>', 'Toggle Todo' },
+        -- These bindings can go from 1 till 9
+        ['2'] = { "Tdo 2", 'Todo 2 Days In Future' },
+        p = {
+            ['2'] = { "Tdo -2", 'Todo 2 Days In Past' },
+        },
+
+
     },
 ```
 
