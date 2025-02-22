@@ -1,4 +1,4 @@
-local tdo = {}
+local M = {}
 
 local function telescope_select(options, options_desc, select_prompt)
     require('telescope.pickers')
@@ -15,7 +15,7 @@ local function telescope_select(options, options_desc, select_prompt)
         :find()
 end
 
-tdo.run_with = function(argument)
+M.run_with = function(argument)
     local full_command = 'tdo ' .. argument
     local file_name = vim.fn.system(full_command)
     if file_name == '' then
@@ -32,7 +32,7 @@ tdo.run_with = function(argument)
     end
 end
 
-tdo.new_note = function()
+M.new_note = function()
     local note = vim.fn.input({ prompt = 'Note Path: ', cancelreturn = false })
     if not note then
         return
@@ -41,27 +41,27 @@ tdo.new_note = function()
         local current_time = os.date('%m-%d-%H-%M-%S')
         note = 'drafts/' .. current_time
     end
-    tdo.run_with(string.format("'%s'", note))
+    M.run_with(string.format("'%s'", note))
 end
 
-tdo.find_note = function()
+M.find_note = function()
     local root = vim.env.NOTES_DIR
     require('telescope.builtin').live_grep({ cwd = root, prompt_title = 'Search Notes' })
 end
 
-tdo.all_notes = function()
+M.all_notes = function()
     local root = vim.env.NOTES_DIR
     require('telescope.builtin').find_files({ cwd = root, prompt_title = 'All Notes' })
 end
 
-tdo.pending_todos = function()
+M.pending_todos = function()
     local results = vim.fn.systemlist('tdo todo')
     vim.o.hlsearch = true
     vim.fn.setreg('/', ' ]')
     telescope_select(results, 'Pending Todos', 'Select Todo')
 end
 
-tdo.toggle_todo = function()
+M.toggle_todo = function()
     local startline = vim.api.nvim_buf_get_mark(0, '<')[1]
     local endline = vim.api.nvim_buf_get_mark(0, '>')[1]
     local cursorlinenr = vim.api.nvim_win_get_cursor(0)[1]
@@ -93,4 +93,4 @@ tdo.toggle_todo = function()
     end
 end
 
-return tdo
+return M
