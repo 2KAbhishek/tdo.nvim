@@ -37,6 +37,7 @@ tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim wo
 - All features provided by [tdo](https://github.com/2kabhishek/tdo?tab=readme-ov-file#-features)
 - Various commands to make working with tdo seamless
 - Todo navigation and toggle helpers
+- Fuzzy autocompletion for notes navigation
 - Integration with telescope for easy notes searching
 
 ## ⚡ Setup
@@ -71,6 +72,7 @@ Add the following to your lazy/packer config
 `tdo.nvim` adds the following commands:
 
 - `Tdo <args>`: open today's todo when no `args`, accepts `args` same as [tdo](https://github.com/2kabhishek/tdo?tab=readme-ov-file#-usage)
+  - Supports tab completion for file paths and fuzzy matching
 - `TdoEntry <offset>`: open today's journal entry, accepts `offset`
 - `TdoNote`: create new note with title, if left empty creates a draft with current timestamp
 - `TdoTodos`: show all your incomplete todos
