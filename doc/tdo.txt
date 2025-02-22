@@ -1,4 +1,4 @@
-*tdo.txt*           For Neovim >= 0.8.0          Last change: 2025 February 19
+*tdo.txt*           For Neovim >= 0.8.0          Last change: 2025 February 22
 
 ==============================================================================
 Table of Contents                                      *tdo-table-of-contents*
@@ -19,6 +19,7 @@ FEATURES                                                        *tdo-features*
 - All features provided by tdo <https://github.com/2kabhishek/tdo?tab=readme-ov-file#-features>
 - Various commands to make working with tdo seamless
 - Todo navigation and toggle helpers
+- Fuzzy autocompletion for notes navigation
 - Integration with telescope for easy notes searching
 
 
@@ -58,6 +59,7 @@ COMMANDS ~
 `tdo.nvim` adds the following commands:
 
 - `Tdo <args>`open today’s todo when no `args`, accepts `args` same as tdo <https://github.com/2kabhishek/tdo?tab=readme-ov-file#-usage>
+    - Supports tab completion for file paths and fuzzy matching
 - `TdoEntry <offset>`open today’s journal entry, accepts `offset`
 - `TdoNote`create new note with title, if left empty creates a draft with current timestamp
 - `TdoTodos`show all your incomplete todos
