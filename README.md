@@ -38,7 +38,7 @@ tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim wo
 - Various commands to make working with tdo seamless
 - Todo navigation and toggle helpers
 - Fuzzy autocompletion for notes navigation
-- Integration with telescope for easy notes searching
+- Integration with pickers for easy notes searching
 
 ## ⚡ Setup
 
@@ -46,7 +46,7 @@ tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim wo
 
 - Neovim
 - [tdo](https://github.com/2kabhishek/tdo)
-- telescope.nvim
+- [utils.nvim](https://github.com/2kabhishek/utils.nvim)
 
 ### 💻 Installation
 
@@ -56,7 +56,7 @@ Add the following to your lazy/packer config
     -- Lazy
     {
         '2kabhishek/tdo.nvim',
-        dependencies =  'nvim-telescope/telescope.nvim',
+        dependencies =  '2kabhishek/utils.nvim',
         cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoTodos', 'TdoToggle', 'TdoFind', 'TdoFiles' },
         keys = { '[t', ']t' },
     },
