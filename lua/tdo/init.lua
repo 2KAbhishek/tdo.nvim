@@ -1,4 +1,5 @@
 local M = {}
+local picker = require('utils.picker')
 
 local function telescope_select(options, options_desc, select_prompt)
     require('telescope.pickers')
@@ -15,6 +16,7 @@ local function telescope_select(options, options_desc, select_prompt)
         :find()
 end
 
+M.root = vim.env.NOTES_DIR
 M.run_with = function(argument)
     local full_command = 'tdo ' .. argument
     local file_name = vim.fn.system(full_command)
@@ -45,13 +47,11 @@ M.new_note = function()
 end
 
 M.find_note = function()
-    local root = vim.env.NOTES_DIR
-    require('telescope.builtin').live_grep({ cwd = root, prompt_title = 'Search Notes' })
+    picker.live_grep({ cwd = M.root, title = 'Search Notes' })
 end
 
 M.all_notes = function()
-    local root = vim.env.NOTES_DIR
-    require('telescope.builtin').find_files({ cwd = root, prompt_title = 'All Notes' })
+    picker.files({ cwd = M.root, title = 'All Notes' })
 end
 
 M.pending_todos = function()
