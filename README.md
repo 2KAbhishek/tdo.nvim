@@ -38,15 +38,14 @@ tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim wo
 - Various commands to make working with tdo seamless
 - Todo navigation and toggle helpers
 - Fuzzy autocompletion for notes navigation
-- Integration with pickers for easy notes searching
+- Integration with Various pickers for easy notes searching
 
 ## ⚡ Setup
 
 ### ⚙️ Requirements
 
-- Neovim
-- [tdo](https://github.com/2kabhishek/tdo)
-- [utils.nvim](https://github.com/2kabhishek/utils.nvim)
+- [tdo](https://github.com/2kabhishek/tdo) must be setup
+- [utils.nvim](https://github.com/2kabhishek/utils.nvim) for picker support
 
 ### 💻 Installation
 
@@ -109,13 +108,11 @@ I have defined commands for yesterday/tomorrow's todos, commit note and timestam
         s = { '<cmd>lua require("tdo").run_with("commit " .. vim.fn.expand("%:p")) vim.notify("Commited!")<cr>', 'Commit Note', },
         t = { '<cmd>TdoTodos<cr>', 'Incomplete Todos' },
         x = { '<cmd>TdoToggle<cr>', 'Toggle Todo' },
-        -- These bindings can go from 1 till 9
-        ['2'] = { "Tdo 2", 'Todo 2 Days In Future' },
+        -- <NUM> can be any number, I recommend going from 1 till 9 in a loop
+        ['<NUM>'] = { "Tdo <NUM>", 'Todo <NUM> Days In Future' },
         p = {
-            ['2'] = { "Tdo -2", 'Todo 2 Days In Past' },
+            ['<NUM>'] = { "Tdo -<NUM>", 'Todo <NUM> Days In Past' },
         },
-
-
     },
 ```
 
