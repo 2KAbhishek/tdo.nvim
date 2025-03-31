@@ -1,21 +1,6 @@
 local M = {}
 local picker = require('utils.picker')
 
-local function telescope_select(options, options_desc, select_prompt)
-    require('telescope.pickers')
-        .new({}, {
-            prompt_title = select_prompt,
-            results_title = options_desc,
-            finder = require('telescope.finders').new_table({
-                results = options,
-                entry_maker = require('telescope.make_entry').gen_from_file(),
-            }),
-            sorter = require('telescope.sorters').get_fzy_sorter(),
-            previewer = require('telescope.previewers').vim_buffer_cat.new({}),
-        })
-        :find()
-end
-
 M.root = vim.env.NOTES_DIR
 M.run_with = function(argument)
     local full_command = 'tdo ' .. argument
@@ -28,7 +13,7 @@ M.run_with = function(argument)
     table.remove(file_names, #file_names)
 
     if #file_names > 1 then
-        telescope_select(file_names, 'Notes with similar name', 'Select Note')
+        picker.select_file({ items = file_names, title = 'Select Note' })
     else
         vim.cmd('e ' .. file_name)
     end
@@ -58,7 +43,7 @@ M.pending_todos = function()
     local results = vim.fn.systemlist('tdo todo')
     vim.o.hlsearch = true
     vim.fn.setreg('/', ' ]')
-    telescope_select(results, 'Pending Todos', 'Select Todo')
+    picker.select_file({ items = results, title = 'Pending Todos' })
 end
 
 M.toggle_todo = function()
