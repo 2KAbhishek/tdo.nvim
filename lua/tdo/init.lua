@@ -1,5 +1,5 @@
 local M = {}
-local picker = require('utils.picker')
+local pickme = require('pickme')
 
 M.root = vim.env.NOTES_DIR
 M.run_with = function(argument)
@@ -13,7 +13,7 @@ M.run_with = function(argument)
     table.remove(file_names, #file_names)
 
     if #file_names > 1 then
-        picker.select_file({ items = file_names, title = 'Select Note' })
+        pickme.select_file({ items = file_names, title = 'Select Note' })
     else
         vim.cmd('e ' .. file_name)
     end
@@ -32,18 +32,18 @@ M.new_note = function()
 end
 
 M.find_note = function()
-    picker.live_grep({ cwd = M.root, title = 'Search Notes' })
+    pickme.pick('live_grep', { cwd = M.root, title = 'Search Notes' })
 end
 
 M.all_notes = function()
-    picker.files({ cwd = M.root, title = 'All Notes' })
+    pickme.pick('files', { cwd = M.root, title = 'All Notes' })
 end
 
 M.pending_todos = function()
     local results = vim.fn.systemlist('tdo todo')
     vim.o.hlsearch = true
     vim.fn.setreg('/', ' ]')
-    picker.select_file({ items = results, title = 'Pending Todos' })
+    pickme.select_file({ items = results, title = 'Pending Todos' })
 end
 
 M.toggle_todo = function()
