@@ -1,4 +1,5 @@
 local M = {}
+local config = require('tdo.config')
 local notes = require('tdo.notes')
 
 local CACHE_TIMEOUT = 5000
@@ -39,6 +40,22 @@ local subcommand_handlers = {
         notes.all_notes()
     end,
 }
+
+local function add_default_keybindings()
+    vim.api.nvim_set_keymap(
+        'n',
+        ']t',
+        [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]],
+        { noremap = true, silent = true, desc = 'Next Todo' }
+    )
+
+    vim.api.nvim_set_keymap(
+        'n',
+        '[t',
+        [[?\v\[ \]\_s*[^[]<CR>:noh<CR>]],
+        { noremap = true, silent = true, desc = 'Prev Todo' }
+    )
+end
 
 --- Validates if a path exists and is accessible
 --- @param path string Path to validate
@@ -255,11 +272,16 @@ end
 
 --- Sets up the Tdo user command with completion
 M.setup = function()
-    vim.api.nvim_create_user_command('Tdo', handle_tdo_command, {
-        nargs = '*',
-        complete = complete_tdo_command,
-        desc = 'tdo.nvim unified command interface',
-    })
+    add_default_keybindings()
+    if config.config.use_new_command then
+        vim.api.nvim_create_user_command('Tdo', handle_tdo_command, {
+            nargs = '*',
+            complete = complete_tdo_command,
+            desc = 'tdo.nvim unified command interface',
+        })
+    else
+        require('tdo.legacy').setup()
+    end
 end
 
 return M
