@@ -1,4 +1,5 @@
 local tdo = require('tdo')
+local config = require('tdo.config')
 
 describe('tdo', function()
     it('has the right functions defined', function()
@@ -8,5 +9,22 @@ describe('tdo', function()
         assert.is_function(tdo.all_notes)
         assert.is_function(tdo.pending_todos)
         assert.is_function(tdo.toggle_todo)
+        assert.is_function(tdo.setup)
+    end)
+
+    it('has configuration system', function()
+        assert.is_table(config.config)
+        assert.is_function(config.setup)
+        assert.is_boolean(config.config.use_new_command)
+    end)
+
+    it('defaults to legacy command system', function()
+        config.setup()
+        assert.is_false(config.config.use_new_command)
+    end)
+
+    it('can enable new command system', function()
+        config.setup({ use_new_command = true })
+        assert.is_true(config.config.use_new_command)
     end)
 end)
