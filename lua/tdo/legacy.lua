@@ -6,7 +6,6 @@ M.setup = function()
         notes.run_with(input.args)
     end, {
         nargs = '*',
-        complete = require('tdo.completion').tab_completion,
     })
 
     vim.api.nvim_create_user_command('TdoEntry', function(input)
