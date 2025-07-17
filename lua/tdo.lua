@@ -1,5 +1,4 @@
 local M = {}
-local config = require('tdo.config')
 local notes = require('tdo.notes')
 
 M.root = vim.env.NOTES_DIR
@@ -10,14 +9,9 @@ M.all_notes = notes.all_notes
 M.pending_todos = notes.pending_todos
 M.toggle_todo = notes.toggle_todo
 
-M.setup = function(user_config)
-    config.setup(user_config)
-
-    if config.config.use_new_command then
-        require('tdo.commands').setup()
-    else
-        require('tdo.legacy').setup()
-    end
+M.setup = function(opts)
+    require('tdo.config').setup(opts)
+    require('tdo.commands').setup()
 end
 
 return M
