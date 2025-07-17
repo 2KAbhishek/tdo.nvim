@@ -1,6 +1,11 @@
 local M = {}
 local notes = require('tdo.notes')
-local completion = require('tdo.completion')
+
+local CACHE_TIMEOUT = 5000
+local MAX_CACHE_ENTRIES = 100
+
+local dir_cache = {}
+local cache_order = {}
 
 local subcommands = {
     'entry',
@@ -11,57 +16,224 @@ local subcommands = {
     'files',
 }
 
-local function complete_subcommands(arglead, cmdline, cursorpos)
-    local parts = vim.split(cmdline, '%s+')
-    local cmd_parts = {}
-    for _, part in ipairs(parts) do
-        if part ~= '' then
-            table.insert(cmd_parts, part)
+local subcommand_handlers = {
+    entry = function(args)
+        local offset = args[2] or ''
+        notes.create_entry(offset)
+    end,
+    note = function(args)
+        local title = table.concat(args, ' ', 2)
+        notes.new_note(title)
+    end,
+    todos = function(args)
+        notes.pending_todos()
+    end,
+    toggle = function(args)
+        notes.toggle_todo()
+    end,
+    find = function(args)
+        local text = table.concat(args, ' ', 2)
+        notes.find_note(text)
+    end,
+    files = function(args)
+        notes.all_notes()
+    end,
+}
+
+--- Validates if a path exists and is accessible
+--- @param path string Path to validate
+--- @return boolean true if path is valid and accessible
+local function is_valid_path(path)
+    if not path or path == '' then
+        return false
+    end
+
+    local stat = vim.loop.fs_stat(path)
+    return stat ~= nil
+end
+
+--- Performs enhanced fuzzy matching on a string against a pattern
+--- @param str string The string to match against
+--- @param pattern string The pattern to match
+--- @return boolean true if the pattern matches the string
+local function fuzzy_match(str, pattern)
+    if pattern == '' then
+        return true
+    end
+
+    local lower_str = vim.fn.tolower(str)
+    local lower_pattern = vim.fn.tolower(pattern)
+
+    if vim.startswith(lower_str, lower_pattern) then
+        return true
+    end
+
+    local fuzzy_pattern = lower_pattern:gsub('.', function(c)
+        return vim.pesc(c) .. '.*'
+    end)
+
+    return lower_str:match(fuzzy_pattern) ~= nil
+end
+
+--- Cleans up old cache entries using LRU strategy
+local function cleanup_cache()
+    if #cache_order <= MAX_CACHE_ENTRIES then
+        return
+    end
+
+    local to_remove = #cache_order - MAX_CACHE_ENTRIES
+    for i = 1, to_remove do
+        local old_key = table.remove(cache_order, 1)
+        dir_cache[old_key] = nil
+    end
+end
+
+--- Gets directory contents with caching for performance
+--- @param dir_path string Path to the directory to scan
+--- @return table<string, string>|nil Map of filenames to their types, nil on error
+local function get_directory_contents(dir_path)
+    if not is_valid_path(dir_path) then
+        return nil
+    end
+
+    local current_time = vim.loop.now()
+    local cache_key = dir_path
+
+    if dir_cache[cache_key] and (current_time - dir_cache[cache_key].timestamp) < CACHE_TIMEOUT then
+        return dir_cache[cache_key].contents
+    end
+
+    local handle, err = vim.loop.fs_scandir(dir_path)
+    if not handle then
+        return nil
+    end
+
+    local contents = {}
+    while true do
+        local name, type = vim.loop.fs_scandir_next(handle)
+        if not name then
+            break
+        end
+
+        -- Skip hidden files/directories
+        if not name:match('^%.') then
+            contents[name] = type
         end
     end
+
+    table.insert(cache_order, cache_key)
+    dir_cache[cache_key] = {
+        contents = contents,
+        timestamp = current_time,
+    }
+
+    cleanup_cache()
+    return contents
+end
+
+--- Parses input path into directory and search components
+--- @param arglead string The current argument being completed
+--- @param notes_dir string Base notes directory path
+--- @return table|nil {base_dir: string, search_pattern: string, base_path: string} or nil on error
+local function parse_path_input(arglead, notes_dir)
+    if not notes_dir or notes_dir == '' then
+        return nil
+    end
+
+    local base_dir = notes_dir
+    local search_pattern = arglead
+    local base_path = ''
+
+    local last_slash = arglead:match('.*/()')
+    if last_slash then
+        base_path = arglead:sub(1, last_slash)
+        local dir_part = arglead:sub(1, last_slash - 1)
+
+        local success, resolved_path = pcall(vim.fn.resolve, notes_dir .. '/' .. dir_part)
+        if not success then
+            return nil
+        end
+
+        base_dir = resolved_path
+        search_pattern = arglead:sub(last_slash)
+    end
+
+    return {
+        base_dir = base_dir,
+        search_pattern = search_pattern,
+        base_path = base_path,
+    }
+end
+
+--- Provides tab completion for file paths within the notes directory
+--- @param arglead string The current argument being completed
+--- @return string[] Array of matching file/directory paths
+local function get_file_completions(arglead)
+    local notes_dir = vim.env.NOTES_DIR
+    if not notes_dir then
+        return {}
+    end
+
+    local path_info = parse_path_input(arglead, notes_dir)
+    if not path_info then
+        return {}
+    end
+
+    local contents = get_directory_contents(path_info.base_dir)
+    if not contents then
+        return {}
+    end
+
+    local results = {}
+    for name, type in pairs(contents) do
+        if path_info.search_pattern == '' or fuzzy_match(name, path_info.search_pattern) then
+            local relative_path = path_info.base_path ~= '' and (path_info.base_path .. name) or name
+            local display_path = type == 'directory' and (relative_path .. '/') or relative_path
+            table.insert(results, display_path)
+        end
+    end
+
+    table.sort(results)
+    return results
+end
+
+--- Main completion function for the Tdo command
+--- @param arglead string The current argument being completed
+--- @param cmdline string The full command line
+--- @param cursorpos number The cursor position in the command line
+--- @return string[] Array of completion candidates
+local function complete_tdo_command(arglead, cmdline, cursorpos)
+    local cmd_parts = vim.tbl_filter(function(part)
+        return part ~= ''
+    end, vim.split(cmdline, '%s+'))
 
     if #cmd_parts <= 2 then
         local matches = {}
+        local has_subcommand_match = false
+
         for _, subcommand in ipairs(subcommands) do
             if vim.startswith(subcommand, arglead) then
                 table.insert(matches, subcommand)
+                has_subcommand_match = true
             end
         end
+
+        -- Only get file matches if no exact subcommand match or arglead contains path separators
+        if not has_subcommand_match or arglead:find('/') then
+            local file_matches = get_file_completions(arglead)
+            vim.list_extend(matches, file_matches)
+        end
+
         return matches
-    end
-
-    return {}
-end
-
-local function complete_tdo_command(arglead, cmdline, cursorpos)
-    local parts = vim.split(cmdline, '%s+')
-    local cmd_parts = {}
-    for _, part in ipairs(parts) do
-        if part ~= '' then
-            table.insert(cmd_parts, part)
-        end
-    end
-
-    if #cmd_parts <= 2 then
-        local subcommand_matches = complete_subcommands(arglead, cmdline, cursorpos)
-        local file_matches = completion.tab_completion(arglead, cmdline, cursorpos)
-
-        local all_matches = {}
-        for _, match in ipairs(subcommand_matches) do
-            table.insert(all_matches, match)
-        end
-        for _, match in ipairs(file_matches) do
-            table.insert(all_matches, match)
-        end
-
-        return all_matches
     elseif #cmd_parts == 3 and cmd_parts[2] == 'get' then
-        return completion.tab_completion(arglead, cmdline, cursorpos)
+        return get_file_completions(arglead)
     end
 
     return {}
 end
 
+--- Handles the main Tdo command by routing to appropriate subcommands
+--- @param opts table Command options containing fargs array
 local function handle_tdo_command(opts)
     local args = opts.fargs
 
@@ -71,28 +243,17 @@ local function handle_tdo_command(opts)
     end
 
     local subcommand = args[1]
+    local handler = subcommand_handlers[subcommand]
 
-    if subcommand == 'entry' then
-        local offset = args[2] or ''
-        notes.create_entry(offset)
-    elseif subcommand == 'note' then
-        local title = table.concat(args, ' ', 2)
-        notes.new_note(title)
-    elseif subcommand == 'todos' then
-        notes.pending_todos()
-    elseif subcommand == 'toggle' then
-        notes.toggle_todo()
-    elseif subcommand == 'find' then
-        local text = table.concat(args, ' ', 2)
-        notes.find_note(text)
-    elseif subcommand == 'files' then
-        notes.all_notes()
+    if handler then
+        handler(args)
     else
         local full_args = table.concat(args, ' ')
         notes.run_with(full_args)
     end
 end
 
+--- Sets up the Tdo user command with completion
 M.setup = function()
     vim.api.nvim_create_user_command('Tdo', handle_tdo_command, {
         nargs = '*',
