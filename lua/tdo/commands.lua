@@ -182,6 +182,22 @@ local function parse_path_input(arglead, notes_dir)
     }
 end
 
+--- Provides offset completions for entry and main tdo commands
+--- @param arglead string The current argument being completed
+--- @return string[] Array of matching offset values
+local function get_offset_completions(arglead)
+    local offsets = { '1', '-1', '2', '-2', '3', '-3', '7', '-7' }
+    local matches = {}
+
+    for _, offset in ipairs(offsets) do
+        if vim.startswith(offset, arglead) then
+            table.insert(matches, offset)
+        end
+    end
+
+    return matches
+end
+
 --- Provides tab completion for file paths within the notes directory
 --- @param arglead string The current argument being completed
 --- @return string[] Array of matching file/directory paths
@@ -224,16 +240,22 @@ local function complete_tdo_command(arglead, cmdline, cursorpos)
         return part ~= ''
     end, vim.split(cmdline, '%s+'))
 
-    if #cmd_parts <= 2 then
+    if #cmd_parts == 1 or (#cmd_parts == 2 and arglead ~= '') then
+        -- First argument: subcommands + file paths + offsets
         local matches = {}
         local has_subcommand_match = false
 
+        -- Add matching subcommands
         for _, subcommand in ipairs(subcommands) do
             if vim.startswith(subcommand, arglead) then
                 table.insert(matches, subcommand)
                 has_subcommand_match = true
             end
         end
+
+        -- Add offset completions for main Tdo command
+        local offset_matches = get_offset_completions(arglead)
+        vim.list_extend(matches, offset_matches)
 
         -- Only get file matches if no exact subcommand match or arglead contains path separators
         if not has_subcommand_match or arglead:find('/') then
@@ -242,8 +264,18 @@ local function complete_tdo_command(arglead, cmdline, cursorpos)
         end
 
         return matches
-    elseif #cmd_parts == 3 and cmd_parts[2] == 'get' then
-        return get_file_completions(arglead)
+    elseif #cmd_parts >= 2 then
+        -- Second argument: depends on subcommand
+        local subcommand = cmd_parts[2]
+
+        if subcommand == 'entry' then
+            return get_offset_completions(arglead)
+        elseif subcommand == 'note' then
+            return get_file_completions(arglead)
+        else
+            -- No completions for other subcommands (find, todos, toggle, files)
+            return {}
+        end
     end
 
     return {}
