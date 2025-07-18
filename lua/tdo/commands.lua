@@ -1,12 +1,10 @@
 local M = {}
-local config = require('tdo.config')
+local config = require('tdo.config').config
 local notes = require('tdo.notes')
-
-local CACHE_TIMEOUT = 5000
-local MAX_CACHE_ENTRIES = 100
 
 local dir_cache = {}
 local cache_order = {}
+local pattern_cache = {}
 
 local subcommands = {
     'entry',
@@ -85,23 +83,32 @@ local function fuzzy_match(str, pattern)
         return true
     end
 
-    local fuzzy_pattern = lower_pattern:gsub('.', function(c)
-        return vim.pesc(c) .. '.*'
-    end)
+    local fuzzy_pattern = pattern_cache[lower_pattern]
+    if not fuzzy_pattern then
+        fuzzy_pattern = lower_pattern:gsub('.', function(c)
+            return vim.pesc(c) .. '.*'
+        end)
+        if vim.tbl_count(pattern_cache) < config.cache.max_entries then
+            pattern_cache[lower_pattern] = fuzzy_pattern
+        end
+    end
 
     return lower_str:match(fuzzy_pattern) ~= nil
 end
 
 --- Cleans up old cache entries using LRU strategy
 local function cleanup_cache()
-    if #cache_order <= MAX_CACHE_ENTRIES then
+    local max_entries = config.cache.max_entries
+    if #cache_order <= max_entries then
         return
     end
 
-    local to_remove = #cache_order - MAX_CACHE_ENTRIES
+    local to_remove = math.max(1, math.floor(max_entries * 0.25))
     for i = 1, to_remove do
         local old_key = table.remove(cache_order, 1)
-        dir_cache[old_key] = nil
+        if old_key then
+            dir_cache[old_key] = nil
+        end
     end
 end
 
@@ -116,7 +123,7 @@ local function get_directory_contents(dir_path)
     local current_time = vim.loop.now()
     local cache_key = dir_path
 
-    if dir_cache[cache_key] and (current_time - dir_cache[cache_key].timestamp) < CACHE_TIMEOUT then
+    if dir_cache[cache_key] and (current_time - dir_cache[cache_key].timestamp) < config.cache.timeout then
         return dir_cache[cache_key].contents
     end
 
@@ -186,16 +193,9 @@ end
 --- @param arglead string The current argument being completed
 --- @return string[] Array of matching offset values
 local function get_offset_completions(arglead)
-    local offsets = { '1', '-1', '2', '-2', '3', '-3', '7', '-7' }
-    local matches = {}
-
-    for _, offset in ipairs(offsets) do
-        if vim.startswith(offset, arglead) then
-            table.insert(matches, offset)
-        end
-    end
-
-    return matches
+    return vim.tbl_filter(function(offset)
+        return vim.startswith(offset, arglead)
+    end, config.completion.offsets)
 end
 
 --- Provides tab completion for file paths within the notes directory
@@ -218,8 +218,13 @@ local function get_file_completions(arglead)
     end
 
     local results = {}
+    local ignore_list = config.completion.ignore
+
     for name, type in pairs(contents) do
-        if path_info.search_pattern == '' or fuzzy_match(name, path_info.search_pattern) then
+        if
+            not vim.tbl_contains(ignore_list, name)
+            and (path_info.search_pattern == '' or fuzzy_match(name, path_info.search_pattern))
+        then
             local relative_path = path_info.base_path ~= '' and (path_info.base_path .. name) or name
             local display_path = type == 'directory' and (relative_path .. '/') or relative_path
             table.insert(results, display_path)
@@ -241,31 +246,30 @@ local function complete_tdo_command(arglead, cmdline, cursorpos)
     end, vim.split(cmdline, '%s+'))
 
     if #cmd_parts == 1 or (#cmd_parts == 2 and arglead ~= '') then
-        -- First argument: subcommands + file paths + offsets
         local matches = {}
-        local has_subcommand_match = false
 
-        -- Add matching subcommands
-        for _, subcommand in ipairs(subcommands) do
-            if vim.startswith(subcommand, arglead) then
-                table.insert(matches, subcommand)
-                has_subcommand_match = true
-            end
+        if arglead == '' then
+            vim.list_extend(matches, subcommands)
+            local offset_matches = get_offset_completions('')
+            vim.list_extend(matches, offset_matches)
+            local file_matches = get_file_completions('')
+            vim.list_extend(matches, file_matches)
+            return matches
         end
 
-        -- Add offset completions for main Tdo command
+        local matching_subcommands = vim.tbl_filter(function(subcommand)
+            return vim.startswith(subcommand, arglead)
+        end, subcommands)
+        vim.list_extend(matches, matching_subcommands)
+
         local offset_matches = get_offset_completions(arglead)
         vim.list_extend(matches, offset_matches)
 
-        -- Only get file matches if no exact subcommand match or arglead contains path separators
-        if not has_subcommand_match or arglead:find('/') then
-            local file_matches = get_file_completions(arglead)
-            vim.list_extend(matches, file_matches)
-        end
+        local file_matches = get_file_completions(arglead)
+        vim.list_extend(matches, file_matches)
 
         return matches
     elseif #cmd_parts >= 2 then
-        -- Second argument: depends on subcommand
         local subcommand = cmd_parts[2]
 
         if subcommand == 'entry' then
@@ -273,7 +277,6 @@ local function complete_tdo_command(arglead, cmdline, cursorpos)
         elseif subcommand == 'note' then
             return get_file_completions(arglead)
         else
-            -- No completions for other subcommands (find, todos, toggle, files)
             return {}
         end
     end
@@ -305,7 +308,7 @@ end
 --- Sets up the Tdo user command with completion
 M.setup = function()
     add_default_keybindings()
-    if config.config.use_new_command then
+    if config.use_new_command then
         vim.api.nvim_create_user_command('Tdo', handle_tdo_command, {
             nargs = '*',
             complete = complete_tdo_command,
