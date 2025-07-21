@@ -3,13 +3,17 @@ local M = {}
 M.config = {
     use_new_command = false,
     add_default_keybindings = true,
+    completion = {
+        offsets = {},
+        ignored_files = { 'README.md', 'templates' },
+    },
     cache = {
         timeout = 5000,
         max_entries = 100,
     },
-    completion = {
-        offsets = {},
-        ignored_files = { 'README.md', 'templates' },
+    lualine = {
+        update_frequency = 300,
+        only_show_in_notes = false,
     },
 }
 
