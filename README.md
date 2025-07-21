@@ -119,7 +119,7 @@ The modern `Tdo` command supports comprehensive tab completion:
 #### Legacy Commands (Backward Compatibility)
 
 > **⚠️ DEPRECATION NOTICE**: The following commands are deprecated and will be removed on August 15th, 2025. Please migrate to the new unified `Tdo` command above.
-> More information: https://github.com/2kabhishek/tdo.nvim/issues/13
+> More information: https://github.com/2kabhishek/tdo.nvim/issues/8
 
 The original commands are still available for backward compatibility:
 
