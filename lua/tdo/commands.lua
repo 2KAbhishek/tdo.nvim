@@ -14,11 +14,6 @@ local function add_keymap(keys, cmd, desc)
     vim.api.nvim_set_keymap('n', keys, cmd, { noremap = true, silent = true, desc = desc })
 end
 
-local function add_legacy_keymaps()
-    add_keymap(']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Next Todo')
-    add_keymap('[t', [[?\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Prev Todo')
-end
-
 local function add_default_keymaps()
     add_keymap('<leader>nn', ':Tdo<CR>', "Today's Todo")
     add_keymap('<leader>ne', ':Tdo entry<CR>', "Today's Entry")
@@ -375,24 +370,13 @@ end
 
 --- Sets up the Tdo user command with completion
 M.setup = function()
-    if config.use_new_command then
-        vim.api.nvim_create_user_command('Tdo', handle_tdo_command, {
-            nargs = '*',
-            complete = complete_tdo_command,
-            desc = 'tdo.nvim unified command interface',
-        })
-        if config.add_default_keybindings then
-            add_default_keymaps()
-        end
-    else
-        vim.notify(
-            'Legacy Tdo commands are deprecated and will be removed on 15th August 2025.\n'
-                .. 'Please switch the new `:Tdo` command by adding `use_new_command` in your config.\n'
-                .. 'More info: https://github.com/2kabhishek/tdo.nvim/issues/8',
-            vim.log.levels.WARN
-        )
-        require('tdo.legacy').setup()
-        add_legacy_keymaps()
+    vim.api.nvim_create_user_command('Tdo', handle_tdo_command, {
+        nargs = '*',
+        complete = complete_tdo_command,
+        desc = 'tdo.nvim unified command interface',
+    })
+    if config.add_default_keybindings then
+        add_default_keymaps()
     end
 end
 
