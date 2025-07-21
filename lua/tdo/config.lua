@@ -8,7 +8,7 @@ M.config = {
         max_entries = 100,
     },
     completion = {
-        offsets = { '1', '-1', '2', '-2', '3', '-3' },
+        offsets = {},
         ignored_files = { 'README.md', 'templates' },
     },
 }
