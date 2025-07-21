@@ -6,6 +6,90 @@ local dir_cache = {}
 local cache_order = {}
 local pattern_cache = {}
 
+---Add a normal mode keymap for a command
+---@param keys string
+---@param cmd string
+---@param desc string
+local function add_keymap(keys, cmd, desc)
+    vim.api.nvim_set_keymap('n', keys, cmd, { noremap = true, silent = true, desc = desc })
+end
+
+local function add_legacy_keymaps()
+    add_keymap(']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Next Todo')
+    add_keymap('[t', [[?\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Prev Todo')
+end
+
+local function add_default_keymaps()
+    add_keymap('<leader>nn', ':Tdo<CR>', "Today's Todo")
+    add_keymap('<leader>ne', ':Tdo entry<CR>', "Today's Entry")
+    add_keymap('<leader>nf', ':Tdo files<CR>', 'All Notes')
+    add_keymap('<leader>ng', ':Tdo find<CR>', 'Find Notes')
+    add_keymap('<leader>nh', ':Tdo yesterday<CR>', "Yesterday's Todo")
+    add_keymap('<leader>nl', ':Tdo tomorrow<CR>', "Tomorrow's Todo")
+    add_keymap('<leader>nc', ':Tdo note<CR>', 'Create Note')
+    add_keymap('<leader>nt', ':Tdo todos<CR>', 'Incomplete Todos')
+    add_keymap('<leader>nx', ':Tdo toggle<CR>', 'Toggle Todo')
+
+    add_keymap(']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Next Todo')
+    add_keymap('[t', [[?\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Prev Todo')
+
+    add_keymap(
+        '<leader>ns',
+        ':lua require("tdo.notes").run_with("commit " .. vim.fn.expand("%:p")) vim.notify("Tdo Committed!")<CR>',
+        'Commit Note'
+    )
+
+    for i = 1, 9 do
+        add_keymap(
+            string.format('<leader>nd%d', i),
+            string.format(':Tdo %d<CR>', i),
+            string.format('Todo %d Days Later', i)
+        )
+
+        add_keymap(
+            string.format('<leader>nD%d', i),
+            string.format(':Tdo -%d<CR>', i),
+            string.format('Todo %d Days Ago', i)
+        )
+
+        add_keymap(
+            string.format('<leader>nw%d', i),
+            string.format(':Tdo %d-weeks-later<CR>', i),
+            string.format('Todo %d Weeks Later', i)
+        )
+
+        add_keymap(
+            string.format('<leader>nW%d', i),
+            string.format(':Tdo %d-weeks-ago<CR>', i),
+            string.format('Todo %d Weeks Ago', i)
+        )
+
+        add_keymap(
+            string.format('<leader>nw%d', i),
+            string.format(':Tdo %d-months-later<CR>', i),
+            string.format('Todo %d Months Later', i)
+        )
+
+        add_keymap(
+            string.format('<leader>nW%d', i),
+            string.format(':Tdo %d-months-ago<CR>', i),
+            string.format('Todo %d Months Ago', i)
+        )
+
+        add_keymap(
+            string.format('<leader>ny%d', i),
+            string.format(':Tdo %d-years-later<CR>', i),
+            string.format('Todo %d Years Later', i)
+        )
+
+        add_keymap(
+            string.format('<leader>nY%d', i),
+            string.format(':Tdo %d-years-ago<CR>', i),
+            string.format('Todo %d Years Ago', i)
+        )
+    end
+end
+
 local subcommands = {
     'entry',
     'note',
@@ -38,22 +122,6 @@ local subcommand_handlers = {
         notes.all_notes()
     end,
 }
-
-local function add_default_keybindings()
-    vim.api.nvim_set_keymap(
-        'n',
-        ']t',
-        [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]],
-        { noremap = true, silent = true, desc = 'Next Todo' }
-    )
-
-    vim.api.nvim_set_keymap(
-        'n',
-        '[t',
-        [[?\v\[ \]\_s*[^[]<CR>:noh<CR>]],
-        { noremap = true, silent = true, desc = 'Prev Todo' }
-    )
-end
 
 --- Validates if a path exists and is accessible
 --- @param path string Path to validate
@@ -307,15 +375,18 @@ end
 
 --- Sets up the Tdo user command with completion
 M.setup = function()
-    add_default_keybindings()
     if config.use_new_command then
         vim.api.nvim_create_user_command('Tdo', handle_tdo_command, {
             nargs = '*',
             complete = complete_tdo_command,
             desc = 'tdo.nvim unified command interface',
         })
+        if config.add_default_keybindings then
+            add_default_keymaps()
+        end
     else
         require('tdo.legacy').setup()
+        add_legacy_keymaps()
     end
 end
 
