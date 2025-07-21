@@ -79,42 +79,36 @@ Add the following to your lazy/packer config
 - `TdoFind <text>`: interactively search for `text` in all your notes
 - `TdoFiles`: review all your notes
 
-### ⌨️ Mappings
+### ⌨️ Keybindings
 
-`tdo.nvim` adds the following mappings:
+By default, these are the configured keybindings.
 
-- <kbd>[t</kbd> / <kbd>]t</kbd> — Go to previous/next todo `[ ]`
+| Keybinding        | Command                                            | Description         |
+| ----------------- | -------------------------------------------------- | ------------------- |
+| `<leader>nn`      | `:Tdo<CR>`                                         | Today's Todo        |
+| `<leader>ne`      | `:Tdo entry<CR>`                                   | Today's Entry       |
+| `<leader>nf`      | `:Tdo files<CR>`                                   | All Notes           |
+| `<leader>ng`      | `:Tdo find<CR>`                                    | Find Notes          |
+| `<leader>nh`      | `:Tdo yesterday<CR>`                               | Yesterday's Todo    |
+| `<leader>nl`      | `:Tdo tomorrow<CR>`                                | Tomorrow's Todo     |
+| `<leader>nc`      | `:Tdo note<CR>`                                    | Create Note         |
+| `<leader>ns`      | `:lua require("tdo.notes").run_with("commit")<CR>` | Commit Note         |
+| `<leader>nt`      | `:Tdo todos<CR>`                                   | Incomplete Todos    |
+| `<leader>nx`      | `:Tdo toggle<CR>`                                  | Toggle Todo         |
+| `]t`              | `/\v\[ \]\_s*[^[]<CR>:noh<CR>`                     | Next Todo           |
+| `[t`              | `?\v\[ \]\_s*[^[]<CR>:noh<CR>`                     | Prev Todo           |
+| `<leader>nd[1-9]` | `:Tdo [1-9]<CR>`                                   | Todo N Days Later   |
+| `<leader>nD[1-9]` | `:Tdo -[1-9]<CR>`                                  | Todo N Days Ago     |
+| `<leader>nw[1-9]` | `:Tdo [1-9]-weeks-later<CR>`                       | Todo N Weeks Later  |
+| `<leader>nW[1-9]` | `:Tdo [1-9]-weeks-ago<CR>`                         | Todo N Weeks Ago    |
+| `<leader>nm[1-9]` | `:Tdo [1-9]-months-later<CR>`                      | Todo N Months Later |
+| `<leader>nM[1-9]` | `:Tdo [1-9]-months-ago<CR>`                        | Todo N Months Ago   |
+| `<leader>ny[1-9]` | `:Tdo [1-9]-years-later<CR>`                       | Todo N Years Later  |
+| `<leader>nY[1-9]` | `:Tdo [1-9]-years-ago<CR>`                         | Todo N Years Ago    |
 
-#### Recommended which-key Mappings
+I recommend customizing these keybindings based on your preferences.
 
-Other than the standard commands, you can use which-key to create your own commands.
-
-I have defined commands for yesterday/tomorrow's todos, commit note and timestamp insertion.
-
-```lua
-    n = {
-        name = 'Notes',
-        d = { '<cmd>Tdo<cr>', "Today's Todo" },
-        e = { '<cmd>TdoEntry<cr>', "Today's Entry" },
-        f = { '<cmd>TdoFiles<cr>', 'All Notes' },
-        g = { '<cmd>TdoFind<cr>', 'Find Notes' },
-        h = { '<cmd>Tdo -1<cr>', "Yesterday's Todo" },
-        j = { "<cmd>put =strftime('%a %d %b %r')<cr>", 'Insert Human Date' },
-        J = { "<cmd>put =strftime('%F')<cr>", 'Insert Date' },
-        k = { "<cmd>put =strftime('%r')<cr>", 'Insert Human Time' },
-        K = { "<cmd>put =strftime('%F-%H-%M')<cr>", 'Insert Time' },
-        l = { '<cmd>Tdo 1<cr>', "Tomorrow's Todo" },
-        n = { '<cmd>TdoNote<cr>', 'New Note' },
-        s = { '<cmd>lua require("tdo").run_with("commit " .. vim.fn.expand("%:p")) vim.notify("Commited!")<cr>', 'Commit Note', },
-        t = { '<cmd>TdoTodos<cr>', 'Incomplete Todos' },
-        x = { '<cmd>TdoToggle<cr>', 'Toggle Todo' },
-        -- <NUM> can be any number, I recommend going from 1 till 9 in a loop
-        ['<NUM>'] = { "Tdo <NUM>", 'Todo <NUM> Days In Future' },
-        p = {
-            ['<NUM>'] = { "Tdo -<NUM>", 'Todo <NUM> Days In Past' },
-        },
-    },
-```
+**Note:** Keybindings are only active when `add_default_keybindings = true` in your configuration.
 
 ## 🏗️ What's Next
 
