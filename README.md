@@ -39,6 +39,7 @@ tdo.nvim integrates [tdo](https://github.com/2kabhishek/tdo) into your neovim wo
 - Todo navigation and toggle helpers
 - Fuzzy autocompletion for notes navigation
 - Integration with various pickers via [pickme.nvim](https://github.com/2kabhishek/pickme.nvim) for easy notes searching
+- Integration with lualine for pending todos
 
 ## ⚡ Setup
 
@@ -76,11 +77,15 @@ tdo.setup({
     completion = {
         offsets = {},               -- Custom offsets / date expressions for completion
         ignored_files = { 'README.md', 'templates' }, -- Files/directories to ignore in completions
-        cache = {                       -- You don't really need to change these
-            timeout = 5000,             -- Completion cache timeout in milliseconds
-            max_entries = 100,          -- Maximum number of cached completion entries
-        },
     },
+    cache = {                       -- You don't really need to change these
+        timeout = 5000,             -- Completion cache timeout in milliseconds
+        max_entries = 100,          -- Maximum number of cached completion entries
+    },
+    lualine = {                     -- Only used for lualine integration
+        update_frequency = 300,     -- How frequently to update the pending todo count in lualine
+        only_show_in_notes = false, -- Whether to show the lualine component only in notes buffers
+    }
 })
 ```
 
@@ -169,6 +174,22 @@ By default, these are the configured keybindings.
 I recommend customizing these keybindings based on your preferences.
 
 **Note:** Keybindings are only active when `add_default_keybindings = true` in your configuration.
+
+### 📊 Lualine Integration
+
+You can display your pending todo count in your lualine statusline.
+
+Copy the component from [lua/tdo/lualine.lua](./lua/tdo/lualine.lua) and add it to your lualine `sections` config (recommended)
+
+#### Alternative (No Lazy Loading!)
+
+```lua
+require('lualine').setup({
+    sections = {
+        lualine_x = { require('tdo.lualine'), 'fileformat', 'filetype' },
+    }
+})
+```
 
 ## 🏗️ What's Next
 
