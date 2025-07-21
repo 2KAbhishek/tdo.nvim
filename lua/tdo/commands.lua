@@ -388,7 +388,7 @@ M.setup = function()
         vim.notify(
             'Legacy Tdo commands are deprecated and will be removed on 15th August 2025.\n'
                 .. 'Please switch the new `:Tdo` command by adding `use_new_command` in your config.\n'
-                .. 'More info: https://github.com/2kabhishek/tdo.nvim/issues/13',
+                .. 'More info: https://github.com/2kabhishek/tdo.nvim/issues/8',
             vim.log.levels.WARN
         )
         require('tdo.legacy').setup()
