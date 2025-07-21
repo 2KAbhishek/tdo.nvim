@@ -72,7 +72,6 @@ tdo.nvim can be configured using the following options:
 local tdo = require('tdo')
 
 tdo.setup({
-    use_new_command = false,        -- Use the new unified `Tdo` command
     add_default_keybindings = true, -- Add default keybindings for the plugin
     completion = {
         offsets = {},               -- Custom offsets / date expressions for completion
@@ -88,8 +87,6 @@ tdo.setup({
     }
 })
 ```
-
-> **Note:** Set `use_new_command = true` to enable the modern unified `Tdo` command with natural language date support and enhanced completion.
 
 ### 📡 Commands
 
@@ -120,29 +117,6 @@ The modern `Tdo` command supports comprehensive tab completion:
 - **File paths**: Auto-complete note paths with fuzzy matching
 - **Natural dates**: `today`, `tomorrow`, `yesterday`, `monday`, `next-friday`, `last-week` - powered by your `completion.offsets` config, [available expressions](https://github.com/2kabhishek/tdo#-natural-date-parsing)
 - **Context-aware**: Shows relevant completions based on subcommand
-
-#### Legacy Commands (Backward Compatibility)
-
-> **⚠️ DEPRECATION NOTICE**: The following commands are deprecated and will be removed on August 15th, 2025. Please migrate to the new unified `Tdo` command above.
-> More information: https://github.com/2kabhishek/tdo.nvim/issues/8
-
-The original commands are still available for backward compatibility:
-
-- `TdoEntry <offset>`: open today's journal entry, accepts `offset`
-- `TdoNote`: create new note with title, if left empty creates a draft with current timestamp
-- `TdoTodos`: show all your incomplete todos
-- `TdoToggle`: toggle todo state
-- `TdoFind <text>`: interactively search for `text` in all your notes
-- `TdoFiles`: review all your notes
-
-**Migration Guide:**
-
-- `TdoEntry` → `:Tdo entry`
-- `TdoNote` → `:Tdo note`
-- `TdoTodos` → `:Tdo todos`
-- `TdoToggle` → `:Tdo toggle`
-- `TdoFind` → `:Tdo find`
-- `TdoFiles` → `:Tdo files`
 
 ### ⌨️ Keybindings
 

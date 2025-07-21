@@ -13,7 +13,6 @@ local M = {}
 ---@field only_show_in_notes boolean Whether to show the lualine component only in notes buffers
 
 ---@class TdoConfig
----@field use_new_command boolean Use the new unified `Tdo` command
 ---@field add_default_keybindings boolean Add default keybindings for the plugin
 ---@field completion TdoCompletionConfig Completion configuration
 ---@field cache TdoCacheConfig Cache configuration
@@ -21,7 +20,6 @@ local M = {}
 
 ---@type TdoConfig
 M.config = {
-    use_new_command = false,
     add_default_keybindings = true,
     completion = {
         offsets = {},
