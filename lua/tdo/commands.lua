@@ -286,7 +286,7 @@ local function get_file_completions(arglead)
     end
 
     local results = {}
-    local ignore_list = config.completion.ignore
+    local ignore_list = config.completion.ignored_files
 
     for name, type in pairs(contents) do
         if

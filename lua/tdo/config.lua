@@ -9,7 +9,7 @@ M.config = {
     },
     completion = {
         offsets = { '1', '-1', '2', '-2', '3', '-3' },
-        ignore = { 'README.md', 'templates' },
+        ignored_files = { 'README.md', 'templates' },
     },
 }
 
