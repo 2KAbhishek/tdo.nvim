@@ -56,28 +56,88 @@ Add the following to your lazy/packer config
     {
         '2kabhishek/tdo.nvim',
         dependencies =  '2kabhishek/pickme.nvim',
-        cmd = { 'Tdo', 'TdoEntry', 'TdoNote', 'TdoTodos', 'TdoToggle', 'TdoFind', 'TdoFiles' },
-        keys = { '[t', ']t' },
+        cmd = { 'Tdo' },
+        keys = { '<leader>nn', '<leader>nx', '[t', ']t' }, -- Add more keybindings you need for lazy loading
     },
-
-    -- Packer
-    use '2kabhishek/tdo.nvim'
 ```
 
 ## 🚀 Usage
 
+### ⚙️ Configuration
+
+tdo.nvim can be configured using the following options:
+
+```lua
+local tdo = require('tdo')
+
+tdo.setup({
+    use_new_command = false,        -- Use the new unified `Tdo` command
+    add_default_keybindings = true, -- Add default keybindings for the plugin
+    completion = {
+        offsets = {},               -- Custom offsets / date expressions for completion
+        ignored_files = { 'README.md', 'templates' }, -- Files/directories to ignore in completions
+        cache = {                       -- You don't really need to change these
+            timeout = 5000,             -- Completion cache timeout in milliseconds
+            max_entries = 100,          -- Maximum number of cached completion entries
+        },
+    },
+})
+```
+
+> **Note:** Set `use_new_command = true` to enable the modern unified `Tdo` command with natural language date support and enhanced completion.
+
 ### 📡 Commands
 
-`tdo.nvim` adds the following commands:
+`tdo.nvim` provides the following commands.
 
-- `Tdo <args>`: open today's todo when no `args`, accepts `args` same as [tdo](https://github.com/2kabhishek/tdo?tab=readme-ov-file#-usage)
-  - Supports tab completion for file paths and fuzzy matching
+- `:Tdo [date_expression / note]`: Opens todo with flexible date formats - [available expressions](https://github.com/2kabhishek/tdo#-natural-date-parsing)
+  - Ex: `:Tdo` - Open today's todo
+  - Ex: `:Tdo tomorrow` - Open tomorrow's todo
+  - Ex: `:Tdo monday` - Open this Monday's todo
+  - Ex: `:Tdo next-friday` - Open next Friday's todo
+  - Ex: `:Tdo 2-weeks-ago` - Open todo from 2 weeks ago
+  - Ex: `:Tdo 2025-07-14` - Open todo for specific date
+  - Ex: `:Tdo vim` - Open note file "vim.md" in notes dir
+- `:Tdo entry [date_expression]`: Opens journal entry with same flexible date formats
+  - Ex: `:Tdo entry` - Open today's journal entry
+  - Ex: `:Tdo entry last-tue` - Open last Tuesday's journal entry
+- `:Tdo note [title/note-file]`: Create new note, if empty creates timestamped draft
+- `:Tdo files`: Review all your notes
+- `:Tdo find [text]`: Search for text in all notes
+- `:Tdo todos`: Show all incomplete todos
+- `:Tdo toggle`: Toggle todo state
+
+#### Command Completion
+
+The modern `Tdo` command supports comprehensive tab completion:
+
+- **Subcommands**: `entry`, `note`, `files`, `find`, `todos`, `toggle`
+- **File paths**: Auto-complete note paths with fuzzy matching
+- **Natural dates**: `today`, `tomorrow`, `yesterday`, `monday`, `next-friday`, `last-week` - powered by your `completion.offsets` config, [available expressions](https://github.com/2kabhishek/tdo#-natural-date-parsing)
+- **Context-aware**: Shows relevant completions based on subcommand
+
+#### Legacy Commands (Backward Compatibility)
+
+> **⚠️ DEPRECATION NOTICE**: The following commands are deprecated and will be removed on August 15th, 2025. Please migrate to the new unified `Tdo` command above.
+> More information: https://github.com/2kabhishek/tdo.nvim/issues/13
+
+The original commands are still available for backward compatibility:
+
 - `TdoEntry <offset>`: open today's journal entry, accepts `offset`
 - `TdoNote`: create new note with title, if left empty creates a draft with current timestamp
 - `TdoTodos`: show all your incomplete todos
 - `TdoToggle`: toggle todo state
 - `TdoFind <text>`: interactively search for `text` in all your notes
 - `TdoFiles`: review all your notes
+
+**Migration Guide:**
+
+- `TdoEntry` → `:Tdo entry`
+- `TdoNote` → `:Tdo note`
+- `TdoTodos` → `:Tdo todos`
+- `TdoToggle` → `:Tdo toggle`
+- `TdoFind` → `:Tdo find`
+- `TdoFiles` → `:Tdo files`
 
 ### ⌨️ Keybindings
 
