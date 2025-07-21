@@ -7,5 +7,12 @@ end
 vim.opt.rtp:append('.')
 vim.opt.rtp:append(plenary_dir)
 
+package.preload['pickme'] = function()
+    return {
+        select_file = function() end,
+        pick = function() end,
+    }
+end
+
 vim.cmd('runtime plugin/plenary.vim')
 require('plenary.busted')
