@@ -15,73 +15,83 @@ local function add_keymap(keys, cmd, desc)
 end
 
 local function add_default_keymaps()
-    add_keymap('<leader>nn', ':Tdo<CR>', "Today's Todo")
-    add_keymap('<leader>ne', ':Tdo entry<CR>', "Today's Entry")
-    add_keymap('<leader>nf', ':Tdo files<CR>', 'All Notes')
-    add_keymap('<leader>ng', ':Tdo find<CR>', 'Find Notes')
-    add_keymap('<leader>nh', ':Tdo yesterday<CR>', "Yesterday's Todo")
-    add_keymap('<leader>nl', ':Tdo tomorrow<CR>', "Tomorrow's Todo")
-    add_keymap('<leader>nc', ':Tdo note<CR>', 'Create Note')
-    add_keymap('<leader>nt', ':Tdo todos<CR>', 'Incomplete Todos')
-    add_keymap('<leader>nx', ':Tdo toggle<CR>', 'Toggle Todo')
+    local mappings = {
+        { '<leader>nn', ':Tdo<CR>', "Today's Todo" },
+        { '<leader>ne', ':Tdo entry<CR>', "Today's Entry" },
+        { '<leader>nf', ':Tdo files<CR>', 'All Notes' },
+        { '<leader>ng', ':Tdo find<CR>', 'Find Notes' },
+        { '<leader>nh', ':Tdo yesterday<CR>', "Yesterday's Todo" },
+        { '<leader>nl', ':Tdo tomorrow<CR>', "Tomorrow's Todo" },
+        { '<leader>nc', ':Tdo note<CR>', 'Create Note' },
+        { '<leader>nt', ':Tdo todos<CR>', 'Incomplete Todos' },
+        { '<leader>nx', ':Tdo toggle<CR>', 'Toggle Todo' },
 
-    add_keymap(']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Next Todo')
-    add_keymap('[t', [[?\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Prev Todo')
+        { ']t', [[/\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Next Todo' },
+        { '[t', [[?\v\[ \]\_s*[^[]<CR>:noh<CR>]], 'Prev Todo' },
+    }
 
-    add_keymap(
+    table.insert(mappings, {
         '<leader>ns',
         ':lua require("tdo.notes").run_with("commit " .. vim.fn.expand("%:p")) vim.notify("Tdo Committed!")<CR>',
-        'Commit Note'
-    )
+        'Commit Note',
+    })
 
     for i = 1, 9 do
-        add_keymap(
+        table.insert(mappings, {
             string.format('<leader>nd%d', i),
             string.format(':Tdo %d<CR>', i),
-            string.format('Todo %d Days Later', i)
-        )
+            string.format('Todo %d Days Later', i),
+        })
 
-        add_keymap(
+        table.insert(mappings, {
             string.format('<leader>nD%d', i),
             string.format(':Tdo -%d<CR>', i),
-            string.format('Todo %d Days Ago', i)
-        )
+            string.format('Todo %d Days Ago', i),
+        })
 
-        add_keymap(
+        table.insert(mappings, {
             string.format('<leader>nw%d', i),
             string.format(':Tdo %d-weeks-later<CR>', i),
-            string.format('Todo %d Weeks Later', i)
-        )
+            string.format('Todo %d Weeks Later', i),
+        })
 
-        add_keymap(
+        table.insert(mappings, {
             string.format('<leader>nW%d', i),
             string.format(':Tdo %d-weeks-ago<CR>', i),
-            string.format('Todo %d Weeks Ago', i)
-        )
+            string.format('Todo %d Weeks Ago', i),
+        })
 
-        add_keymap(
-            string.format('<leader>nw%d', i),
+        table.insert(mappings, {
+            string.format('<leader>nm%d', i),
             string.format(':Tdo %d-months-later<CR>', i),
-            string.format('Todo %d Months Later', i)
-        )
+            string.format('Todo %d Months Later', i),
+        })
 
-        add_keymap(
-            string.format('<leader>nW%d', i),
+        table.insert(mappings, {
+            string.format('<leader>nM%d', i),
             string.format(':Tdo %d-months-ago<CR>', i),
-            string.format('Todo %d Months Ago', i)
-        )
+            string.format('Todo %d Months Ago', i),
+        })
 
-        add_keymap(
+        table.insert(mappings, {
             string.format('<leader>ny%d', i),
             string.format(':Tdo %d-years-later<CR>', i),
-            string.format('Todo %d Years Later', i)
-        )
+            string.format('Todo %d Years Later', i),
+        })
 
-        add_keymap(
+        table.insert(mappings, {
             string.format('<leader>nY%d', i),
             string.format(':Tdo %d-years-ago<CR>', i),
-            string.format('Todo %d Years Ago', i)
-        )
+            string.format('Todo %d Years Ago', i),
+        })
+    end
+
+    for _, mapping in ipairs(mappings) do
+        vim.api.nvim_set_keymap('n', mapping[1], mapping[2], {
+            desc = mapping[3],
+            noremap = true,
+            silent = true,
+        })
     end
 end
 
