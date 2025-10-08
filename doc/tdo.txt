@@ -1,4 +1,4 @@
-*tdo.txt*            For Neovim >= 0.8.0           Last change: 2025 August 04
+*tdo.txt*           For Neovim >= 0.8.0           Last change: 2025 October 08
 
 ==============================================================================
 Table of Contents                                      *tdo-table-of-contents*
@@ -44,6 +44,7 @@ Add the following to your lazy/packer config
             dependencies =  '2kabhishek/pickme.nvim',
             cmd = { 'Tdo' },
             keys = { '<leader>nn', '<leader>nt', '<leader>nx', '[t', ']t' }, -- Add more keybindings you need for lazy loading
+            opts = {} -- Required if you are not calling tdo.setup setup manually, you can add your config here
         },
 <
 
@@ -80,7 +81,7 @@ COMMANDS ~
 
 `tdo.nvim` provides the following commands.
 
-- `:Tdo [date_expression / note]`Opens todo with flexible date formats - available expressions <https://github.com/2kabhishek/tdo#-natural-date-parsing>
+- `:Tdo [date_expression / note]`: Opens todo with flexible date formats - available expressions <https://github.com/2kabhishek/tdo#-natural-date-parsing>
     - Ex: `:Tdo` - Open today’s todo
     - Ex: `:Tdo tomorrow` - Open tomorrow’s todo
     - Ex: `:Tdo monday` - Open this Monday’s todo
@@ -88,24 +89,24 @@ COMMANDS ~
     - Ex: `:Tdo 2-weeks-ago` - Open todo from 2 weeks ago
     - Ex: `:Tdo 2025-07-14` - Open todo for specific date
     - Ex: `:Tdo vim` - Open note file "vim.md" in notes dir
-- `:Tdo entry [date_expression]`Opens journal entry with same flexible date formats
+- `:Tdo entry [date_expression]`: Opens journal entry with same flexible date formats
     - Ex: `:Tdo entry` - Open today’s journal entry
     - Ex: `:Tdo entry last-tue` - Open last Tuesday’s journal entry
-- `:Tdo note [title/note-file]`Create new note, if empty creates timestamped draft
-- `:Tdo files`Review all your notes
-- `:Tdo find [text]`Search for text in all notes
-- `:Tdo todos`Show all incomplete todos
-- `:Tdo toggle`Toggle todo state
+- `:Tdo note [title/note-file]`: Create new note, if empty creates timestamped draft
+- `:Tdo files`: Review all your notes
+- `:Tdo find [text]`: Search for text in all notes
+- `:Tdo todos`: Show all incomplete todos
+- `:Tdo toggle`: Toggle todo state
 
 
 COMMAND COMPLETION
 
 The modern `Tdo` command supports comprehensive tab completion:
 
-- **Subcommands**`entry`, `note`, `files`, `find`, `todos`, `toggle`
-- **File paths**Auto-complete note paths with fuzzy matching
-- **Natural dates**`today`, `tomorrow`, `yesterday`, `monday`, `next-friday`, `last-week` - powered by your `completion.offsets` config, available expressions <https://github.com/2kabhishek/tdo#-natural-date-parsing>
-- **Context-aware**Shows relevant completions based on subcommand
+- **Subcommands**: `entry`, `note`, `files`, `find`, `todos`, `toggle`
+- **File paths**: Auto-complete note paths with fuzzy matching
+- **Natural dates**: `today`, `tomorrow`, `yesterday`, `monday`, `next-friday`, `last-week` - powered by your `completion.offsets` config, available expressions <https://github.com/2kabhishek/tdo#-natural-date-parsing>
+- **Context-aware**: Shows relevant completions based on subcommand
 
 
 KEYBINDINGS ~
