@@ -58,7 +58,8 @@ Add the following to your lazy/packer config
         '2kabhishek/tdo.nvim',
         dependencies =  '2kabhishek/pickme.nvim',
         cmd = { 'Tdo' },
-        keys = { '<leader>nn', '<leader>nt', '<leader>nx', '[t', ']t' }, -- Add more keybindings you need for lazy loading
+        -- Add more keybindings you need for lazy loading from the table below
+        keys = { '<leader>nn', '<leader>nf', '<leader>nh', '<leader>nl', '<leader>nt', '<leader>nx', '[t', ']t' },
         opts = {} -- Required if you are not calling tdo.setup setup manually, you can add your config here
     },
 ```
