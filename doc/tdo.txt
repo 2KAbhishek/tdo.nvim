@@ -1,4 +1,4 @@
-*tdo.txt*           For Neovim >= 0.8.0           Last change: 2025 October 15
+*tdo.txt*           For Neovim >= 0.8.0          Last change: 2025 November 20
 
 ==============================================================================
 Table of Contents                                      *tdo-table-of-contents*
